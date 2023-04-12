@@ -587,10 +587,6 @@ local function setupDefaults()
 	if not IconPlacement then
 		IconPlacement = "BOTTOMLEFT"
 	end
-
-	if AutoSellGreyItems == nil then
-		AutoSellGreyItems = true
-	end
 end
 
 local function handleEvent(self, event, addonName)
