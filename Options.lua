@@ -1,7 +1,7 @@
-local _, Peddler = ...
+local _, MarkForSell = ...
 
 local frame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
-frame.name = "Peddler"
+frame.name = "MarkForSell"
 frame:Hide()
 
 frame:SetScript("OnShow", function(self)
@@ -10,7 +10,7 @@ frame:SetScript("OnShow", function(self)
 end)
 
 local function createCheckBox(parent, anchor, number, property, label, tooltip)
-	local checkbox = CreateFrame("CheckButton", "PeddlerCheckBox" .. number, parent, "ChatConfigCheckButtonTemplate")
+	local checkbox = CreateFrame("CheckButton", "MarkForSellCheckBox" .. number, parent, "ChatConfigCheckButtonTemplate")
 	checkbox:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 16, number * -26)
 
 	local checkboxLabel = _G[checkbox:GetName() .. "Text"]
@@ -66,7 +66,7 @@ end
 function frame:CreateOptions()
 	local title = self:CreateFontString(nil, nil, "GameFontNormalLarge")
 	title:SetPoint("TOPLEFT", 16, -16)
-	title:SetText("Peddler v5.0")
+	title:SetText("MarkForSell v1.0")
 
 	local sellLimit = createCheckBox(self, title, 1, SellLimit, "Sell Limit", "Limits the amount of items sold in one go, so you may buy all items back.")
 	sellLimit:SetScript("PostClick", function(self, button, down)
@@ -108,47 +108,47 @@ function frame:CreateOptions()
 	autoSellLabel:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 16, -210)
 	autoSellLabel:SetText("Automatically sell...")
 
-	local autoSellSoulboundOnly = createCheckBox(self, title, 8, SoulboundOnly, "Restrict to Soulbound Items", "Only allow Peddler to automatically mark soulbound items for sale (does not restrict grey items, naturally).")
+	local autoSellSoulboundOnly = createCheckBox(self, title, 8, SoulboundOnly, "Restrict to Soulbound Items", "Only allow MarkForSell to automatically mark soulbound items for sale.")
 	autoSellSoulboundOnly:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 120, -205)
 	autoSellSoulboundOnly:SetScript("PostClick", function(self, button, down)
 		SoulboundOnly = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local autoSellGreyItems = createCheckBox(self, title, 9, AutoSellGreyItems, "Poor Items", "Automatically sells all grey/junk items.")
 	autoSellGreyItems:SetScript("PostClick", function(self, button, down)
 		AutoSellGreyItems = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local autoSellWhiteItems = createCheckBox(self, title, 10, AutoSellWhiteItems, "Common Items", "Automatically sells all white/common items.")
 	autoSellWhiteItems:SetScript("PostClick", function(self, button, down)
 		AutoSellWhiteItems = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local autoSellGreenItems = createCheckBox(self, title, 11, AutoSellGreenItems, "Uncommon Items", "Automatically sells all green/uncommon items.")
 	autoSellGreenItems:SetScript("PostClick", function(self, button, down)
 		AutoSellGreenItems = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local autoSellBlueItems = createCheckBox(self, title, 12, AutoSellBlueItems, "Rare Items", "Automatically sells all blue/rare items.")
 	autoSellBlueItems:SetScript("PostClick", function(self, button, down)
 		AutoSellBlueItems = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local autoSellPurpleItems = createCheckBox(self, title, 13, AutoSellPurpleItems, "Epic Items", "Automatically sells all purple/epic items.")
 	autoSellPurpleItems:SetScript("PostClick", function(self, button, down)
 		AutoSellPurpleItems = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local autoSellUnwantedItems = createCheckBox(self, title, 14, AutoSellUnwantedItems, "Unwanted Items", "Automatically sell all items which are unwanted for your current class (e.g. Priests don't want plate gear, so all plate gear will be marked).")
 	autoSellUnwantedItems:SetScript("PostClick", function(self, button, down)
 		AutoSellUnwantedItems = self:GetChecked()
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local clearWaresList = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
@@ -157,7 +157,7 @@ function frame:CreateOptions()
 	clearWaresList:SetText("Clear Items List")
 	clearWaresList:SetScript("PostClick", function(self, button, down)
 		ItemsToSell = {}
-		Peddler.markWares()
+		MarkForSell.markWares()
 	end)
 
 	local clearWaresLabel = self:CreateFontString(nil, nil, "GameFontHighlightSmall")
@@ -169,8 +169,8 @@ end
 
 InterfaceOptions_AddCategory(frame)
 
--- Handling Peddler's options.
-SLASH_PEDDLER_COMMAND1 = '/peddler'
-SlashCmdList['PEDDLER_COMMAND'] = function(command)
-	InterfaceOptionsFrame_OpenToCategory('Peddler')
+-- Handling MarkForSell's options.
+SLASH_MARKFORSELL_COMMAND1 = '/markforsell'
+SlashCmdList['MARKFORSELL_COMMAND'] = function(command)
+	InterfaceOptionsFrame_OpenToCategory('MarkForSell')
 end

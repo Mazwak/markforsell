@@ -1,0 +1,9 @@
+## Interface: 30400
+## Title: MarkForSell
+## Notes: Automatically sells previously designated items! (fork of Peddler)
+## Author: Mazwak
+## SavedVariables: ModifierKey, SellLimit, Silent, SilenceSaleSummary, IconPlacement, ItemsToSell, UnmarkedItems, AutoSellGreyItems, AutoSellWhiteItems, AutoSellGreenItems, AutoSellBlueItems, AutoSellPurpleItems, AutoSellUnwantedItems, SoulboundOnly
+
+vo\WantedItems.lua
+markforsell.lua
+Options.lua

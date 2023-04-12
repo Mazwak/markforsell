@@ -1,7 +1,7 @@
-local _, Peddler = ...
+local _, MarkForSell = ...
 
 local ARMOUR = "Armor"
-Peddler.ARMOUR = ARMOUR
+MarkForSell.ARMOUR = ARMOUR
 
 local PLATE = "Plate"
 local MAIL = "Mail"
@@ -18,7 +18,7 @@ local MISC = "Miscellaneous"
 
 
 local WEAPON = "Weapon"
-Peddler.WEAPON = WEAPON
+MarkForSell.WEAPON = WEAPON
 
 local ONE_HANDED_AXE = "One-Handed Axes"
 local TWO_HANDED_AXE = "Two-Handed Axes"
@@ -43,7 +43,7 @@ local WAND = "Wands"
 
 local FISHING_POLE = "Fishing Poles"
 
-Peddler.WANTED_ITEMS = {
+MarkForSell.WANTED_ITEMS = {
 	['DEATHKNIGHT'] = {
 		[ARMOUR] = {MAIL, PLATE, SIGIL, MISC},
 		[WEAPON] = {ONE_HANDED_AXE, TWO_HANDED_AXE, ONE_HANDED_MACE, TWO_HANDED_MACE, ONE_HANDED_SWORD, TWO_HANDED_SWORD, POLEARM, FISHING_POLE}

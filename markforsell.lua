@@ -1,4 +1,4 @@
-local _, Peddler = ...
+local _, MarkForSell = ...
 
 -- Assign global functions to locals for optimisation.
 local GetContainerNumSlots = GetContainerNumSlots
@@ -14,9 +14,9 @@ local IsAltKeyDown = IsAltKeyDown
 local UnitClass = UnitClass
 local Baggins = Baggins
 
-local ARMOUR = Peddler.ARMOUR
-local WEAPON = Peddler.WEAPON
-local WANTED_ITEMS = Peddler.WANTED_ITEMS
+local ARMOUR = MarkForSell.ARMOUR
+local WEAPON = MarkForSell.WEAPON
+local WANTED_ITEMS = MarkForSell.WANTED_ITEMS
 
 local BUYBACK_COUNT = 12
 local _, PLAYERS_CLASS = UnitClass('player')
@@ -40,15 +40,15 @@ local function priceToGold(price)
 	return math.floor(gold) .. "|cFFFFCC33g|r " .. math.floor(silver) .. "|cFFC9C9C9s|r " .. math.floor(copper) .. "|cFFCC8890c|r"
 end
 
-local peddler = CreateFrame("Frame", nil, UIParent)
+local markforsell = CreateFrame("Frame", nil, UIParent)
 local salesDelay = CreateFrame("Frame")
 local usingDefaultBags = false
 local markCounter = 1
 local countLimit = 1
 
-peddler:RegisterEvent("PLAYER_ENTERING_WORLD")
-peddler:RegisterEvent("ADDON_LOADED")
-peddler:RegisterEvent("MERCHANT_SHOW")
+markforsell:RegisterEvent("PLAYER_ENTERING_WORLD")
+markforsell:RegisterEvent("ADDON_LOADED")
+markforsell:RegisterEvent("MERCHANT_SHOW")
 
 -- Is there really no better way to check soulbound-ness...?
 local soulboundToolip
@@ -101,7 +101,7 @@ local function parseItemString(itemString)
 	return itemID, uniqueItemID
 end
 
-function Peddler.getUniqueItemID(bagNumber, slotNumber)
+function MarkForSell.getUniqueItemID(bagNumber, slotNumber)
 	if bagNumber == nil then return end
 
 	local itemString = GetContainerItemLink(bagNumber, slotNumber)
@@ -126,7 +126,7 @@ local function isUnwantedItem(itemType, subType, equipSlot)
 	return unwantedItem
 end
 
-function Peddler.itemIsToBeSold(itemID, uniqueItemID)
+function MarkForSell.itemIsToBeSold(itemID, uniqueItemID)
 	if itemID == nil or uniqueItemID == nil then return end
 
 	local _, link, quality, itemLevel, _, itemType, subType, _, equipSlot, _, price = GetItemInfo(itemID)
@@ -166,9 +166,9 @@ local function peddleGoods()
 	for bagNumber = 0, 4 do
 		local bagsSlotCount = GetContainerNumSlots(bagNumber)
 		for slotNumber = 1, bagsSlotCount do
-			local itemID, uniqueItemID = Peddler.getUniqueItemID(bagNumber, slotNumber)
+			local itemID, uniqueItemID = MarkForSell.getUniqueItemID(bagNumber, slotNumber)
 
-			if uniqueItemID and Peddler.itemIsToBeSold(itemID, uniqueItemID) then
+			if uniqueItemID and MarkForSell.itemIsToBeSold(itemID, uniqueItemID) then
 				local itemButton = _G["ContainerFrame" .. bagNumber + 1 .. "Item" .. bagsSlotCount - slotNumber + 1]
 
 				if itemButton.coins then
@@ -182,7 +182,7 @@ local function peddleGoods()
 					price = price * amount
 
 					if total == 0 and (not Silent or not SilenceSaleSummary) then
-						print("Peddler sold:")
+						print("MarkForSell sold:")
 					end
 
 					total = total + price
@@ -238,7 +238,7 @@ end
 local function showCoinTexture(itemButton)
 	if not itemButton.coins then
 		local texture = itemButton:CreateTexture(nil, "OVERLAY")
-		texture:SetTexture("Interface\\AddOns\\Peddler\\coins")
+		texture:SetTexture("Interface\\AddOns\\MarkForSell\\coins")
 
 		-- Default padding for making bottom-right look great.
 		local paddingX, paddingY = -3, 1
@@ -257,7 +257,7 @@ local function showCoinTexture(itemButton)
 	itemButton.coins:Show()
 
 	if not usingDefaultBags then
-		peddler:SetScript("OnUpdate", nil)
+		markforsell:SetScript("OnUpdate", nil)
 	end
 	markCounter = 0
 
@@ -272,7 +272,7 @@ end
 
 local function displayCoins(itemID, uniqueItemID, itemButton)
 	if uniqueItemID then
-		if Peddler.itemIsToBeSold(itemID, uniqueItemID) then
+		if MarkForSell.itemIsToBeSold(itemID, uniqueItemID) then
 			showCoinTexture(itemButton)
 		elseif itemButton.coins then
 			itemButton.coins:Hide()
@@ -283,7 +283,7 @@ local function displayCoins(itemID, uniqueItemID, itemButton)
 end
 
 local function checkItem(bagNumber, slotNumber, itemButton)
-	local itemID, uniqueItemID = Peddler.getUniqueItemID(bagNumber, slotNumber)
+	local itemID, uniqueItemID = MarkForSell.getUniqueItemID(bagNumber, slotNumber)
 	displayCoins(itemID, uniqueItemID, itemButton)
 end
 
@@ -363,7 +363,7 @@ local function markArkInventoryBags()
 		local bagsSlotCount = GetContainerNumSlots(bagNumber)
 		for slotNumber = 1, bagsSlotCount do
 			local itemButton = _G["ARKINV_Frame1ScrollContainerBag" .. bagNumber + 1 .. "Item" .. slotNumber]
-			-- Required to check for itemButton because ArkInventory changed when it builds the item objects so only the first slot of each bag is available prior to the first time its opened, causing Peddler to get a nil obj for itemButton. /vincentSDSH
+			-- Required to check for itemButton because ArkInventory changed when it builds the item objects so only the first slot of each bag is available prior to the first time its opened, causing MarkForSell to get a nil obj for itemButton. /vincentSDSH
 			if itemButton then checkItem(bagNumber, slotNumber, itemButton) end
 		end
 	end
@@ -552,7 +552,7 @@ local function markWares()
 	end
 end
 
-Peddler.markWares = markWares
+MarkForSell.markWares = markWares
 
 local function onUpdate()
 	markCounter = markCounter + 1
@@ -566,7 +566,7 @@ end
 
 local function handleBagginsOpened()
 	if markCounter == 0 then
-		peddler:SetScript("OnUpdate", onUpdate)
+		markforsell:SetScript("OnUpdate", onUpdate)
 	end
 end
 
@@ -594,29 +594,29 @@ local function setupDefaults()
 end
 
 local function handleEvent(self, event, addonName)
-	if event == "ADDON_LOADED" and addonName == "Peddler" then
-		peddler:UnregisterEvent("ADDON_LOADED")
+	if event == "ADDON_LOADED" and addonName == "MarkForSell" then
+		markforsell:UnregisterEvent("ADDON_LOADED")
 
 		setupDefaults()
 
 		countLimit = 400
-		peddler:SetScript("OnUpdate", onUpdate)
+		markforsell:SetScript("OnUpdate", onUpdate)
 
 		if IsAddOnLoaded("Baggins") then
 			Baggins:RegisterSignal("Baggins_BagOpened", handleBagginsOpened, Baggins)
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
-		peddler:RegisterEvent("BAG_UPDATE")
+		markforsell:RegisterEvent("BAG_UPDATE")
 	elseif event == "BAG_UPDATE" then
 		if markCounter == 0 then
-			peddler:SetScript("OnUpdate", onUpdate)
+			markforsell:SetScript("OnUpdate", onUpdate)
 		end
 	elseif event == "MERCHANT_SHOW" then
 		peddleGoods()
 	end
 end
 
-peddler:SetScript("OnEvent", handleEvent)
+markforsell:SetScript("OnEvent", handleEvent)
 
 local function toggleItemPeddling(itemID, uniqueItemID)
 	local _, link, quality, _, _, itemType, subType, _, equipSlot, _, price = GetItemInfo(itemID)
@@ -661,15 +661,15 @@ local function handleItemClick(self, button)
 	local altKeyDown = IsAltKeyDown()
 
 	local modifierDown = (ModifierKey == 'CTRL' and ctrlKeyDown or (ModifierKey == 'SHIFT' and shiftKeyDown or (ModifierKey == 'ALT' and altKeyDown or (ModifierKey == 'CTRL-SHIFT' and ctrlKeyDown and shiftKeyDown or (ModifierKey == 'CTRL-ALT' and ctrlKeyDown and altKeyDown or (ModifierKey == 'ALT-SHIFT' and altKeyDown and shiftKeyDown))))))
-	local usingPeddler = (modifierDown and button == 'RightButton')
-	if not usingPeddler then
+	local usingMarkForSell = (modifierDown and button == 'RightButton')
+	if not usingMarkForSell then
 		return
 	end
 
 	local bagNumber = self:GetParent():GetID()
 	local slotNumber = self:GetID()
 
-	local itemID, uniqueItemID = Peddler.getUniqueItemID(bagNumber, slotNumber)
+	local itemID, uniqueItemID = MarkForSell.getUniqueItemID(bagNumber, slotNumber)
 
 	-- Empty bag slots cannot be sold, silly!
 	if not itemID then
@@ -745,4 +745,4 @@ end
 MapQuestInfoRewardsFrame:HookScript("OnShow", onMapQuestRewardsShow)
 QuestInfoRewardsFrame:HookScript("OnShow", onQuestRewardsShow)
 
-PeddlerAPI = Peddler
+MarkForSellAPI = MarkForSell
